@@ -4,6 +4,7 @@
 #include <DHT.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <TM1637Display.h>
 
 Adafruit_BMP085 bmp;
 #define DHTPIN 1  //GPIO1 (Tx)
@@ -20,11 +21,16 @@ const int httpPort = 80;
 DHT dht(DHTPIN, DHTTYPE, 15);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
+TM1637Display display(2,0);
 
 void setup() {
   pinMode (1, FUNCTION_3);
   pinMode (3, FUNCTION_3);
   Serial.begin(9600);
+
+  // Устанавливаем яркость от 0 до 7
+  display.setBrightness(3);
+  display.clear();
   
   Wire.pins(2, 0);
   Wire.begin(2, 0);
@@ -45,6 +51,8 @@ void setup() {
 }
 
 
+int di = 0;
+
 void loop() { 
   int deviceCount = sensors.getDeviceCount();
   sensors.requestTemperatures();
@@ -60,7 +68,7 @@ void loop() {
   url += "&pressure=";
   url += bmp.readPressure();
   url += "&lighting=";
-  url += "0";
+  url += analogRead(6);
   url += "&id_src=";
   url += "1";
   url += "&mac_address=";
@@ -85,6 +93,17 @@ void loop() {
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Connection: close\r\n\r\n");
+
+  if(di == 0) { display.showNumberDec(round(humidity)); }
+  if(di == 1) { display.showNumberDec(round((bmp.readPressure()/100) * 0.75)); }
+  if(di == 2) { display.showNumberDec(round(temperature)); }
+  if(di == 3) { display.showNumberDec(round(sensors.getTempCByIndex(0))); }
+  if(di == 4) { display.showNumberDec(round(sensors.getTempCByIndex(1))); }
+  if(di == 5) { display.showNumberDec(round(sensors.getTempCByIndex(2))); }
+  di++;
+  if(di > 5) {
+    di = 0;
+  }
 
   delay(DELAY);
 }
