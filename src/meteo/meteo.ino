@@ -143,7 +143,7 @@ void loop() {
       
       const uint8_t SEG_DONE[] = {
         SEG_B | SEG_C | SEG_D | SEG_E | SEG_G,           // d
-        SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F,   // Oo
+        SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F,   // O
         SEG_C | SEG_E | SEG_G,                           // n
         SEG_A | SEG_D | SEG_E | SEG_F | SEG_G            // E
       };
@@ -152,7 +152,7 @@ void loop() {
       display.setSegments(SEG_DONE);
 
     } else {
-      const uint8_t seg[] = { SEG_A | SEG_G | SEG_D | SEG_E | SEG_F, SEG_E | SEG_G,  SEG_E | SEG_G, 0x00 };
+      const uint8_t seg[] = { SEG_A | SEG_G | SEG_D | SEG_E | SEG_F, SEG_E | SEG_G,  SEG_E | SEG_G, 0x00 }; // Err
       display.clear();
       display.setSegments(seg);
     }
